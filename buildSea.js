@@ -11,11 +11,11 @@ if (fs.existsSync("dist")) {
     fs.rmSync("dist", { force: true, recursive: true })
 }
 fs.mkdirSync("dist")
+let esbuildCmd = "index.js --outfile=dist/index.js --format=esm --bundle --platform=node"
 try {
-    child_process.execSync("esbuild --version")
-    child_process.execSync(`esbuild index.js --outfile=./dist/index.js --bundle --platform=node `)
+    child_process.execSync(`esbuild ${esbuildCmd}`)
 } catch (error) {
-    child_process.execSync(`"${process.execPath}" ./node_modules/esbuild/bin/esbuild index.js --outfile=./dist/index.js --bundle --platform=node `)
+    child_process.execSync(`./node_modules/./bin/esbuild ${esbuildCmd}`)
 }
 child_process.execSync(`"${process.execPath}" --experimental-sea-config sea-config.json`)
 
@@ -26,7 +26,11 @@ if (os.platform().startsWith("win")) {
     exePath = packageJSON.name
 }
 
-fs.mkdirSync("bin")
+if (!fs.existsSync("bin"))
+    fs.mkdirSync("bin")
+if (fs.existsSync("bin/" + exePath)) {
+    fs.rmSync("bin/" + exePath, { force: true, recursive: true })
+}
 if (fs.existsSync("bin/" + exePath)) {
     fs.rmSync("bin/" + exePath, { force: true, recursive: true })
 }
