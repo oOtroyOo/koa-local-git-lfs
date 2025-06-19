@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '22.x'
-          cache: 'npm'
+          # cache: 'npm'
       - run: npm install
       - run: npm run build
       - name: Upload Linux artifact
@@ -31,8 +31,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '22.x'
-          cache: 'npm'
-      - run: npm ci
+          # cache: 'npm'
+      - run: npm install
       - run: npm run build
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
