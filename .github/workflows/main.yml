@@ -18,10 +18,11 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Upload Linux artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: linux-build
           path: dist/*
+          retention-days: 5
 
   build-windows:
     runs-on: windows-latest
@@ -34,10 +35,11 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Upload Windows artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: windows-build
           path: dist/*
+          retention-days: 5
 
   create-release:
     needs: [build-linux, build-windows]
@@ -64,7 +66,7 @@ jobs:
           git push origin $new_tag
       
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: releases
       
