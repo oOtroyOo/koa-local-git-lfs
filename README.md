@@ -62,3 +62,56 @@ router.use("/lfs", lfs.routes())
 // Start Koa server
 ```
 
+
+# Client Git Respository Example
+
+## Project Setup
+
+
+
+  - create `.gitattributes` file
+    - see: https://docs.github.com/repositories/working-with-files/managing-large-files/configuring-git-large-file-storage
+
+    Example:
+  ```
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
+*.tif filter=lfs diff=lfs merge=lfs -text
+*.raw filter=lfs diff=lfs merge=lfs -text
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.aiff filter=lfs diff=lfs merge=lfs -text
+*.tga filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.webm filter=lfs diff=lfs merge=lfs -text
+  ```
+
+  - create `.lfsconfig` file
+  
+    Example:
+  ```
+  [lfs]
+    url = http://127.0.0.1:8888/lfs/lfstest.git/
+  ```
+
+
+  - *(optional)* Moving file to Git LFS
+
+    `git lfs migrate`
+    - see: 
+     https://docs.github.com/repositories/working-with-files/managing-large-files/moving-a-file-in-your-repository-to-git-large-file-storage
+
+  - *(optional)* Force push to lfs
+
+    `git lfs push --all origin `
+
+# References
+- https://github.com/git-lfs/git-lfs/blob/main/docs/api/server-discovery.md
+- https://github.com/git-lfs/git-lfs/blob/main/docs/api/batch.md
+- https://github.com/git-lfs/git-lfs/blob/main/docs/api/basic-transfers.md
+- https://docs.github.com/repositories/working-with-files/managing-large-files/about-git-large-file-storage
