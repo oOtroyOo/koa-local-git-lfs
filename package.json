@@ -4,8 +4,7 @@
   "main": "lfs.js",
   "scripts": {
     "test": "node index.js",
-    "build": "node buildSea.js",
-    "postbuild": "mkdir -p dist && mv *.exe dist/ 2>/dev/null || mv koa-git-lfs-server dist/ 2>/dev/null || true"
+    "build": "node buildSea.js"
   },
   "keywords": [],
   "author": "",
