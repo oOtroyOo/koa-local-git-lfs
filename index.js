@@ -9,9 +9,9 @@ const parser = new ArgumentParser({
     description: 'Argparse 示例'
 });
 
-parser.add_argument('-p', '--port', { required: true, help: "Port" });
-parser.add_argument('-d', '--dir', { required: true, help: "LocalDir" });
-parser.add_argument('-r', '--route', { required: false, help: "Route Path. default /lfs " });
+parser.add_argument('-p', '--port', { required: true, help: "Server Running Port" });
+parser.add_argument('-d', '--dir', { required: true, help: "Local folder Path" });
+parser.add_argument('-r', '--route', { required: false, help: "Url Relative path, default (host:)/lfs" });
 
 
 const args = parser.parse_args();
