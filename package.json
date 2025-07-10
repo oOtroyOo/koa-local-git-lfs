@@ -21,6 +21,7 @@
     "argparse": "^2.0.1",
     "koa": "^3.0.0",
     "koa-bodyparser": "^4.0.0",
-    "koa-router": "^13.0.0"
+    "path-to-regexp": "^8.2.0",
+    "koa-router": "13.0.1"
   }
 }
