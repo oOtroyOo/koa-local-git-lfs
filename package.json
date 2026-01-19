@@ -1,7 +1,7 @@
 {
   "name": "koa-git-lfs-server",
   "version": "1.0.0",
-  "main": "lfs.js",
+  "main": "koaLFS.js",
   "scripts": {
     "test": "node index.js",
     "build": "node buildSea.js"

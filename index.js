@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import koaRouter from 'koa-router';
-import LfsController from './lfs.js';
+import LfsController from './koaLFS.js';
 import util from 'util';
 import bodyParser from 'koa-bodyparser';
 import { ArgumentParser } from 'argparse';

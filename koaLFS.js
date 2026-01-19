@@ -9,20 +9,36 @@ import path from 'path';
 // https://github.com/git-lfs/git-lfs/blob/main/docs/api/basic-transfers.md
 // https://github.com/git-lfs/lfs-test-server
 
-export default class LfsController {
-    constructor(rootDir) {
+export default class koaLFS {
+    constructor(rootDir, urlBuilder = undefined, middware = undefined) {
         this.rootDir = rootDir || path.resolve('./lfs_objects')
+        this.hostBuilder = urlBuilder
+        /** @type {koaRouter} */
+        this.lfsRouter = new koaRouter({ strict: true });
         console.log(`lfs-root: ${this.rootDir}`);
+
+        // LFS batch API
+        if (middware) {
+            this.lfsRouter.post(`/*project/objects/batch`, middware, async (ctx, next) => await this.batch(ctx, next))
+        } else {
+            this.lfsRouter.post(`/*project/objects/batch`, async (ctx, next) => await this.batch(ctx, next))
+        }
+
+        // LFS object upload/download
+        if (middware) {
+            this.lfsRouter.get(`/*project/objects/:oid`, middware, async (ctx, next) => await this.download(ctx, next))
+        } else {
+            this.lfsRouter.get(`/*project/objects/:oid`, async (ctx, next) => await this.download(ctx, next))
+        }
+
+        if (middware) {
+            this.lfsRouter.put(`/*project/objects/:oid`, middware, async (ctx, next) => await this.upload(ctx, next))
+        } else {
+            this.lfsRouter.put(`/*project/objects/:oid`, async (ctx, next) => await this.upload(ctx, next))
+        }
     }
 
     routes() {
-        /** @type {koaRouter} */
-        this.lfsRouter = new koaRouter({ strict: true });
-        // LFS batch API
-        this.lfsRouter.post(`/*project/objects/batch`, async (ctx, next) => await this.batch(ctx, next));
-        // LFS object upload/download
-        this.lfsRouter.get(`/*project/objects/:oid`, async (ctx, next) => await this.download(ctx, next));
-        this.lfsRouter.put(`/*project/objects/:oid`, async (ctx, next) => await this.upload(ctx, next));
         return this.lfsRouter.routes()
     }
 
@@ -35,6 +51,7 @@ export default class LfsController {
    @param {Koa.Next} next 
    */
     async batch(ctx, next) {
+        console.log("LFS batch " + ctx.originalUrl);
         const { operation, objects } = ctx.request.body || {};
         if (!objects || !Array.isArray(objects)) {
             ctx.status = 400;
@@ -57,7 +74,8 @@ export default class LfsController {
                         console.log(e)
                 }
                 const actions = {};
-                const href = `${ctx.protocol}://${ctx.host}${ctx.originalUrl.substring(0, ctx.originalUrl.lastIndexOf('/') + 1)}${oid}`;
+                const href = ((this.hostBuilder ? this.hostBuilder(ctx) : undefined) || `${ctx.protocol}://${ctx.host}`)
+                    + `${ctx.originalUrl.substring(0, ctx.originalUrl.lastIndexOf('/') + 1)}${oid}`;
                 if (operation === 'download' && exists) {
                     actions.download = {
                         href: href
@@ -88,6 +106,7 @@ export default class LfsController {
     @param {Koa.Next} next 
     */
     async download(ctx, next) {
+        console.log("LFS download " + ctx.originalUrl);
         const oid = ctx.params.oid;
         const project = ctx.params.project;
         const filePath = this.getObjectPath(project, oid);
@@ -111,6 +130,7 @@ export default class LfsController {
     @param {Koa.Next} next 
     */
     async upload(ctx, next) {
+        console.log(`LFS upload CTX:  ${JSON.stringify(ctx)}\nparams: ${JSON.stringify(ctx.params)}`)
         const oid = ctx.params.oid;
         const project = ctx.params.project;
         const filePath = this.getObjectPath(project, oid);
